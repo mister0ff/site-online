@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Termos de Uso · Beleza Essencial</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Quicksand',sans-serif;color:#3e2c3b;background:#fdf7fa;line-height:1.7;padding:1.5rem}
+main{max-width:760px;margin:0 auto;background:#fff;border:1px solid #ffd6e5;border-radius:22px;padding:2rem 1.6rem}
+h1{font-family:'Playfair Display',serif;color:#a64b6e;margin-bottom:.4rem}
+h2{color:#8a3a5a;font-size:1.05rem;margin:1.4rem 0 .3rem}
+p,li{font-weight:500;color:#5d4352;font-size:.95rem}ul{padding-left:1.2rem}
+a{color:#a64b6e;font-weight:700}.v{font-size:.8rem;color:#b46484}
+</style>
+</head>
+<body>
+<main>
+<h1>Termos de Uso, Privacidade e Reembolso</h1>
+<p class="v">Versão v1 · Vendedor: <span id="seller">…</span> · Contato: <span id="support">…</span></p>
+
+<h2>1. O produto</h2>
+<p>O "Beleza Essencial" é um e-book digital interativo, acessado pelo navegador, com conteúdo informativo sobre cuidados com a pele do rosto. O acesso é pessoal e intransferível, vinculado ao pagamento realizado, e fica disponível por 30 dias em cada aparelho autorizado (até 5 acessos por compra). É proibido copiar, revender, redistribuir ou compartilhar o link de acesso.</p>
+
+<h2>2. Preço e pagamento</h2>
+<p>O preço é exibido na página da loja, em reais (BRL), em pagamento único. O pagamento é processado pelo Mercado Pago. O acesso é liberado somente após a confirmação do pagamento diretamente na plataforma do Mercado Pago. Pagamentos não aprovados, estornados ou contestados (chargeback) cancelam o acesso.</p>
+
+<h2>3. Aviso de saúde</h2>
+<p>O conteúdo é educativo e <b>não substitui</b> consulta, diagnóstico ou tratamento feito por dermatologista ou outro profissional de saúde. Receitas caseiras podem causar alergia ou irritação: faça sempre o teste de sensibilidade descrito no e-book e interrompa o uso diante de qualquer reação. Resultados variam de pessoa para pessoa e não são garantidos.</p>
+
+<h2>4. Direito de arrependimento e reembolso</h2>
+<p>Por ser uma compra feita pela internet, você pode desistir em até 7 dias corridos a contar da compra (art. 49 do Código de Defesa do Consumidor), com devolução integral do valor, solicitando pelo e-mail de contato acima e informando o e-mail usado na compra. O reembolso é feito pelo próprio Mercado Pago e o acesso ao e-book é encerrado.</p>
+
+<h2>5. Privacidade (LGPD)</h2>
+<p>Coletamos apenas o seu e-mail e os dados técnicos mínimos (endereço IP em formato protegido, data e a versão dos Termos aceita) para processar o pedido, prevenir fraudes, liberar o acesso e comprovar o seu aceite. Os dados de pagamento (cartão, Pix) são tratados exclusivamente pelo Mercado Pago e não passam por nosso servidor. Não vendemos seus dados. Você pode pedir acesso, correção ou exclusão pelo e-mail de contato. Pedidos não pagos são apagados automaticamente após 3 dias.</p>
+
+<h2>6. Propriedade intelectual</h2>
+<p>Todo o conteúdo, textos e ilustrações são protegidos por direitos autorais. A compra concede licença de uso pessoal, não exclusiva.</p>
+
+<h2>7. Uso indevido</h2>
+<p>Tentativas de burlar o pagamento, automatizar compras, sobrecarregar o sistema ou compartilhar o acesso podem levar ao bloqueio do acesso sem reembolso, sem prejuízo das medidas legais cabíveis.</p>
+
+<p style="margin-top:1.5rem"><a href="/">← Voltar à loja</a></p>
+</main>
+<script>
+fetch('/api/config').then(function(r){return r.json()}).then(function(c){
+  document.getElementById('seller').textContent=c.seller;document.getElementById('support').textContent=c.support;
+});
+</script>
+</body>
+</html>

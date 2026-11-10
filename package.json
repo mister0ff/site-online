@@ -1,0 +1,9 @@
+{
+  "name": "loja-beleza-essencial",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Loja do e-book Beleza Essencial com pagamento verificado no servidor (Mercado Pago)",
+  "main": "server.js",
+  "scripts": { "start": "node server.js", "test": "node test.js" },
+  "engines": { "node": ">=20" }
+}

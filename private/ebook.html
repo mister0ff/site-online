@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Beleza Essencial · E-book Interativo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--rose:#a64b6e;--deep:#8a3a5a;--soft:#b46484;--pink-border:#ffd6e5;--text:#3e2c3b;--text-soft:#5d4352;--paper:#fffbfd;--bg:#fdf7fa;--fs:1}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Quicksand',sans-serif;background:var(--bg);color:var(--text);line-height:1.65;position:fixed;inset:0;-webkit-tap-highlight-color:transparent;
+background-image:radial-gradient(circle at 12% 18%,rgba(255,214,232,.55),transparent 42%),radial-gradient(circle at 88% 82%,rgba(255,200,222,.45),transparent 45%)}
+.cover{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:2rem 1.5rem;overflow:hidden;
+background:linear-gradient(160deg,#fff2f8,#fde8f2 50%,#fce3ee);transition:opacity .7s,visibility .7s}
+.cover::before{content:'';position:absolute;width:140%;height:140%;top:-20%;left:-20%;background:radial-gradient(circle,rgba(255,200,225,.5),transparent 55%);animation:cf 12s ease-in-out infinite;pointer-events:none}
+@keyframes cf{50%{transform:translate(4%,3%) scale(1.08)}}
+.cover.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.cover-content{position:relative;z-index:2;text-align:center;max-width:520px}
+.cover-art{width:min(300px,70vw);margin:0 auto 1.2rem;border-radius:26px;overflow:hidden;box-shadow:0 24px 50px -22px rgba(190,100,140,.6);border:3px solid #fff}
+.cover-art svg{display:block;width:100%;height:auto}
+.badge{display:inline-block;background:rgba(255,255,255,.75);border:1px solid var(--pink-border);color:var(--soft);font-size:.72rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;padding:.5rem 1.3rem;border-radius:50px;margin-bottom:1.2rem}
+.cover h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(2.8rem,10vw,4.4rem);line-height:1;color:var(--rose);letter-spacing:-1.5px;margin-bottom:.8rem}
+.cover h1 em{font-weight:400;color:var(--soft)}
+.cover-sub{font-weight:600;color:var(--text-soft);margin-bottom:1.6rem}
+.cover-btn{font:inherit;font-weight:700;letter-spacing:.8px;color:#fff;background:linear-gradient(135deg,#c4638a,#a64b6e);border:none;padding:1rem 2.6rem;border-radius:50px;cursor:pointer;box-shadow:0 12px 28px -8px rgba(180,80,120,.55);transition:transform .25s}
+.cover-btn:hover{transform:translateY(-3px)}
+.app{width:100%;height:100%;display:flex;flex-direction:column;padding:max(.8rem,env(safe-area-inset-top)) .9rem max(.4rem,env(safe-area-inset-bottom));opacity:0;transition:opacity .6s .2s}
+.app.visible{opacity:1}
+.top{display:flex;align-items:center;justify-content:space-between;gap:.6rem;max-width:960px;width:100%;margin:0 auto;padding:.3rem .4rem .7rem;flex-shrink:0}
+.brand{font-family:'Playfair Display',serif;font-weight:600;font-size:1.1rem;color:var(--rose)}.brand span{font-style:italic;font-weight:400;color:var(--soft)}
+.tools{display:flex;gap:.4rem;align-items:center}
+.chip{font:inherit;font-size:.74rem;font-weight:700;letter-spacing:1px;color:var(--soft);background:rgba(255,255,255,.8);padding:.38rem .85rem;border-radius:50px;border:1px solid var(--pink-border);cursor:pointer}
+.chip b{color:var(--rose)}
+.stage{flex:1;position:relative;max-width:960px;width:100%;margin:0 auto;min-height:0;perspective:2400px;touch-action:pan-y}
+.page{position:absolute;inset:0;border-radius:22px;background:var(--paper);overflow-y:auto;overflow-x:hidden;padding:0 0 2.4rem;transform-origin:left center;backface-visibility:hidden;
+background-image:linear-gradient(180deg,rgba(255,245,250,.7),transparent 30%);box-shadow:0 26px 55px -24px rgba(190,100,140,.4),0 0 0 1px rgba(255,220,235,.8) inset;scrollbar-width:thin;scrollbar-color:#f3c4d6 transparent}
+.page.in-next{animation:inNext .7s ease both;z-index:5}
+.page.out-next{animation:outNext .75s cubic-bezier(.65,.05,.35,1) both;z-index:20;pointer-events:none}
+.page.in-prev{animation:inPrev .75s cubic-bezier(.65,.05,.35,1) both;z-index:20}
+.page.out-prev{animation:outPrev .7s ease both;z-index:5;pointer-events:none}
+@keyframes inNext{from{opacity:.4;transform:scale(.98)}to{opacity:1;transform:none}}
+@keyframes outNext{to{transform:rotateY(-100deg);opacity:0}}
+@keyframes inPrev{from{transform:rotateY(-100deg);opacity:0}to{transform:none;opacity:1}}
+@keyframes outPrev{to{opacity:.4;transform:scale(.98)}}
+@media(prefers-reduced-motion:reduce){.page{animation-duration:.01s!important}}
+.art{width:100%;aspect-ratio:400/240;max-height:42vh;overflow:hidden;border-radius:22px 22px 0 0;background:#ffe9f1}
+.art svg,.art img{display:block;width:100%;height:100%;object-fit:cover}
+.inner{padding:1.4rem 1.7rem 0;font-size:calc(1rem*var(--fs))}
+@media(min-width:900px){.inner{padding:1.8rem 3rem 0}}
+.num{font-size:.68rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#d095b0;display:flex;align-items:center;gap:.8rem;margin-bottom:.8rem}
+.num::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,#f8cddd,transparent)}
+h2{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(1.5rem,4.2vw,2.1rem);line-height:1.18;color:var(--rose);letter-spacing:-.4px;margin-bottom:.9rem;display:flex;gap:.6rem;align-items:flex-start}
+h2 .ic{flex-shrink:0}
+p{font-size:.97em;color:var(--text-soft);margin-bottom:.9rem;font-weight:500}
+p strong,li strong{color:var(--deep);font-weight:700}
+ul.tl{list-style:none;margin:.9rem 0 1.1rem}
+ul.tl li{position:relative;padding-left:1.6rem;margin-bottom:.6rem;font-size:.94em;color:var(--text-soft);font-weight:500}
+ul.tl li::before{content:'✦';position:absolute;left:0;top:.05rem;color:#e79ab8;font-size:.85rem}
+.box{border-radius:0 16px 16px 0;padding:.95rem 1.2rem;margin:1.1rem 0}
+.box h4{font-size:.76rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:.3rem}
+.box p{margin:0;font-size:.93em}
+.tip{background:linear-gradient(135deg,#ffeef5,#ffe3ee);border-left:4px solid #e79ab8}.tip h4{color:var(--rose)}.tip p{font-style:italic;color:#6b4356}
+.cur{background:linear-gradient(135deg,#f3f0ff,#ebe6ff);border-left:4px solid #a995e6}.cur h4{color:#5b46b0}.cur p{color:#4a3f78}
+.warn{background:linear-gradient(135deg,#fff4e0,#ffeacc);border-left:4px solid #f0a64b}.warn h4{color:#a8620f}.warn p{color:#6b4a1f}
+.rec{background:#f1faf1;border:1.5px dashed #9fcf9f;border-radius:18px;padding:1.1rem 1.2rem;margin:1.1rem 0}
+.rec h4{font-family:'Playfair Display',serif;font-size:1.1rem;color:#2f6b3a;margin-bottom:.5rem}
+.rec h5{font-size:.72rem;letter-spacing:1.2px;text-transform:uppercase;color:#4a8a55;margin:.7rem 0 .25rem}
+.rec ul,.rec ol{padding-left:1.2rem}.rec li{font-size:.92em;color:#3d5a42;margin-bottom:.25rem;font-weight:500}
+.rec .av{margin-top:.7rem;font-size:.85em;color:#7a4a2a;font-weight:600}
+.toc a{display:flex;gap:.7rem;padding:.55rem .8rem;border-radius:12px;text-decoration:none;color:var(--text-soft);font-weight:600;font-size:.92em;cursor:pointer}
+.toc a:hover{background:#ffeef5}.toc a span{color:#d095b0;font-weight:700;min-width:1.7rem}
+.bar{display:flex;align-items:center;gap:.8rem;max-width:700px;width:100%;margin:0 auto;padding:.8rem .4rem .5rem;flex-shrink:0}
+.nav{width:44px;height:44px;border-radius:50%;border:1px solid var(--pink-border);background:rgba(255,255,255,.9);color:var(--rose);font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 5px 16px -6px rgba(200,120,155,.4)}
+.nav:disabled{opacity:.3;cursor:default}
+.track{flex:1;height:6px;border-radius:10px;background:rgba(255,214,229,.7);overflow:hidden}
+.fill{height:100%;width:2%;background:linear-gradient(90deg,#e79ab8,#a64b6e);border-radius:10px;transition:width .5s}
+.hint{position:fixed;bottom:4.6rem;left:50%;transform:translateX(-50%);background:rgba(62,44,59,.85);color:#fff;font-size:.78rem;font-weight:600;padding:.5rem 1.2rem;border-radius:50px;pointer-events:none;opacity:0;transition:opacity .5s;z-index:50;white-space:nowrap}
+.hint.show{opacity:1}
+@media(max-height:500px) and (orientation:landscape){.art{max-height:30vh}.inner{padding:.8rem 1.2rem 0}}
+</style>
+</head>
+<body>
+
+<div class="cover" id="cover">
+  <div class="cover-content">
+    <div class="cover-art" id="coverArt"></div>
+    <div class="badge" id="badge">E-book interativo</div>
+    <h1>Beleza<br><em>essencial</em></h1>
+    <p class="cover-sub">cuidados para o rosto feminino · com receitas caseiras seguras</p>
+    <button class="cover-btn" id="startBtn">Começar a leitura</button>
+  </div>
+</div>
+
+<div class="app" id="app">
+  <div class="top">
+    <div class="brand">Beleza <span>essencial</span></div>
+    <div class="tools">
+      <button class="chip" id="fsBtn" aria-label="Aumentar letra">A+</button>
+      <button class="chip" id="tocBtn" aria-label="Sumário">☰</button>
+      <div class="chip"><b id="cur">1</b> / <span id="tot">45</span></div>
+    </div>
+  </div>
+  <div class="stage" id="stage"></div>
+  <div class="bar">
+    <button class="nav" id="prev" aria-label="Página anterior">←</button>
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <button class="nav" id="next" aria-label="Próxima página">→</button>
+  </div>
+</div>
+<div class="hint" id="hint">← arraste para virar a página →</div>
+
+<script>
+/* ============================================================
+   ILUSTRAÇÕES (SVG originais, geradas por código — sem dependência externa)
+   Para usar FOTOS reais, preencha PHOTOS com { 'numero-da-pagina': 'URL da foto licenciada' }.
+   ============================================================ */
+const PHOTOS = {}; // ex.: { 4: 'https://.../foto.jpg' }
+const SKIN=['#f2c9a5','#e0a97d','#b97a56','#8a5a3c','#f6d7bf','#d99a6c'];
+const HAIR=['#3b2a22','#1f1a1a','#8a4b2a','#c28a4a','#5a3a2e','#2b1e3a'];
+const CLOTH=['#f7b6cf','#c9b6f2','#b6e0d4','#ffd9a8','#f4a9a8','#b9d3f5'];
+const BGS=[['#ffe3ee','#fff4f8'],['#e9f5e3','#fbfff7'],['#fff0dc','#fffaf2'],['#e8e4ff','#faf8ff'],['#dff3f7','#f7fdff'],['#ffe6e0','#fff8f6']];
+function art(v,k){
+  k=k|0;const s=SKIN[k%6],h=HAIR[(k*5+1)%6],c=CLOTH[(k*3)%6],bg=BGS[k%6];
+  const bun=k%3===0;
+  let deco=`<circle cx="50" cy="45" r="60" fill="#fff" opacity=".35"/><circle cx="360" cy="200" r="80" fill="#fff" opacity=".3"/>
+  <g fill="#8fc48f" opacity=".55"><ellipse cx="46" cy="190" rx="14" ry="38" transform="rotate(-25 46 190)"/><ellipse cx="72" cy="205" rx="12" ry="32" transform="rotate(15 72 205)"/><ellipse cx="356" cy="52" rx="12" ry="32" transform="rotate(30 356 52)"/><ellipse cx="378" cy="82" rx="10" ry="26" transform="rotate(-10 378 82)"/></g>
+  <g fill="#f7a8c6" opacity=".8"><circle cx="30" cy="120" r="7"/><circle cx="40" cy="128" r="7"/><circle cx="26" cy="132" r="7"/><circle cx="35" cy="125" r="4" fill="#ffd36b"/></g>`;
+  const hairBack=bun?`<circle cx="200" cy="42" r="24" fill="${h}"/><path d="M142 108Q140 48 200 46Q260 48 258 108Z" fill="${h}"/>`
+    :`<path d="M136 114Q134 38 200 36Q266 38 264 114L274 218Q200 236 126 218Z" fill="${h}"/>`;
+  let eyes=`<ellipse cx="184" cy="108" rx="5" ry="3.6" fill="#33262a"/><ellipse cx="216" cy="108" rx="5" ry="3.6" fill="#33262a"/>`;
+  const closed=`<path d="M177 108q7 6 14 0M209 108q7 6 14 0" stroke="#33262a" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
+  let mouth=`<path d="M190 138Q200 147 210 138" stroke="#a0455e" stroke-width="2.6" fill="none" stroke-linecap="round"/>`;
+  let props='';
+  switch(v){
+    case 'mask': eyes=closed;
+      props=`<path d="M156 92Q200 78 244 92Q252 132 232 154Q200 172 168 154Q148 132 156 92Z" fill="#9db88a" opacity=".94"/>${closed}<path d="M189 140q11 7 22 0" stroke="#f3c4d6" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M148 84Q148 34 200 32Q252 34 252 84Q200 62 148 84Z" fill="#fff" stroke="#f3c4d6"/><path d="M160 74Q200 54 240 74" stroke="#f3c4d6" stroke-width="3" fill="none"/>`;break;
+    case 'cucumber': eyes='';
+      props=`<g><circle cx="184" cy="108" r="14" fill="#b7d98b" stroke="#6fa24a" stroke-width="2"/><circle cx="184" cy="108" r="8" fill="none" stroke="#e6f4c8" stroke-width="2"/><circle cx="216" cy="108" r="14" fill="#b7d98b" stroke="#6fa24a" stroke-width="2"/><circle cx="216" cy="108" r="8" fill="none" stroke="#e6f4c8" stroke-width="2"/></g>
+      <path d="M148 84Q148 34 200 32Q252 34 252 84Q200 62 148 84Z" fill="#fff" stroke="#f3c4d6"/><g fill="#fff"><circle cx="300" cy="170" r="22" fill="#b7d98b" stroke="#6fa24a" stroke-width="2"/><circle cx="300" cy="170" r="13" fill="none" stroke="#e6f4c8" stroke-width="2"/></g>`;break;
+    case 'cream': eyes=closed;
+      props=`<g fill="#fff" opacity=".95"><circle cx="174" cy="126" r="6"/><circle cx="226" cy="126" r="6"/><circle cx="200" cy="90" r="5"/><circle cx="200" cy="122" r="4"/></g>
+      <rect x="292" y="172" width="64" height="40" rx="9" fill="#fff" stroke="#e79ab8" stroke-width="2"/><rect x="288" y="160" width="72" height="16" rx="7" fill="#e79ab8"/><path d="M305 192h38" stroke="#f3c4d6" stroke-width="4" stroke-linecap="round"/>`;break;
+    case 'guasha': eyes=closed;
+      props=`<g transform="translate(232 124) rotate(-28)"><path d="M0 0Q20-18 42-4Q52 12 32 24Q10 30 0 0Z" fill="#f0a8c4" stroke="#d46a95" stroke-width="2"/></g>
+      <rect x="62" y="150" width="30" height="62" rx="8" fill="#ffe9a8" stroke="#e0b84a" stroke-width="2"/><rect x="68" y="140" width="18" height="14" rx="3" fill="#3b2a22"/>`;break;
+    case 'sun': eyes=`<path d="M177 108q7 -5 14 0M209 108q7 -5 14 0" stroke="#33262a" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
+      props=`<g fill="#fff"><circle cx="176" cy="126" r="5"/><circle cx="224" cy="126" r="5"/><circle cx="200" cy="90" r="5"/><circle cx="200" cy="124" r="4"/></g>
+      <g transform="translate(332 52)"><circle r="22" fill="#ffd36b"/><g stroke="#ffd36b" stroke-width="4" stroke-linecap="round"><path d="M0-34v-10M0 34v10M-34 0h-10M34 0h10M24-24l7-7M-24 24l-7 7M24 24l7 7M-24-24l-7-7"/></g></g>
+      <g transform="translate(70 160) rotate(-10)"><rect width="34" height="62" rx="9" fill="#ffd36b" stroke="#e0a030" stroke-width="2"/><rect x="6" y="-10" width="22" height="12" rx="3" fill="#fff" stroke="#e0a030" stroke-width="2"/><text x="17" y="38" font-size="11" font-weight="700" text-anchor="middle" fill="#a8620f" font-family="sans-serif">SPF</text></g>`;break;
+    case 'tea': eyes=closed;
+      props=`<path d="M292 176h58l-6 34q-3 10-14 10h-18q-11 0-14-10Z" fill="#fff" stroke="#e79ab8" stroke-width="2"/><path d="M350 184q18 2 12 18q-4 8-16 8" stroke="#e79ab8" stroke-width="3" fill="none"/><path d="M304 168q-6-10 0-18t0-16M324 168q-6-10 0-18t0-16" stroke="#cfa" stroke-width="3" fill="none" stroke-linecap="round" opacity=".8"/>
+      <ellipse cx="68" cy="190" rx="16" ry="30" fill="#8fc48f" transform="rotate(25 68 190)"/>`;break;
+    case 'sleep': eyes=closed;
+      props=`<path d="M150 86Q200 68 250 86" stroke="#e79ab8" stroke-width="11" fill="none" stroke-linecap="round"/><path d="M60 40a20 20 0 1 0 24 26a16 16 0 1 1-24-26Z" fill="#ffd36b"/><g fill="#ffd36b"><circle cx="110" cy="30" r="3"/><circle cx="330" cy="46" r="3"/><circle cx="350" cy="90" r="2.5"/></g>
+      <ellipse cx="200" cy="232" rx="150" ry="22" fill="#fff" opacity=".85"/>`;break;
+    case 'serum': eyes=closed;
+      props=`<g fill="#7fd0d8" opacity=".95"><path d="M174 118q-5 9 0 12q5-3 0-12Z"/></g><rect x="296" y="150" width="50" height="62" rx="10" fill="#ffe9a8" stroke="#e0b84a" stroke-width="2"/><rect x="308" y="128" width="26" height="24" rx="5" fill="#3b2a22"/><ellipse cx="321" cy="120" rx="9" ry="12" fill="#3b2a22"/><circle cx="321" cy="182" r="10" fill="#fff" opacity=".7"/>`;break;
+    case 'lips': mouth=`<path d="M184 138Q192 130 200 135Q208 130 216 138Q208 152 200 152Q192 152 184 138Z" fill="#d6456f"/><path d="M184 138Q200 141 216 138" stroke="#a02c4f" stroke-width="1.6" fill="none"/><circle cx="208" cy="138" r="1.8" fill="#fff" opacity=".8"/>`;
+      props=`<g transform="translate(300 150)"><rect x="0" y="22" width="30" height="46" rx="5" fill="#e79ab8"/><rect x="4" y="2" width="22" height="26" rx="6" fill="#ffd9e6" stroke="#e79ab8" stroke-width="2"/></g><g fill="#ffd36b"><path d="M330 60l4 10 10 4-10 4-4 10-4-10-10-4 10-4Z"/></g>`;break;
+    case 'mirror': props=`<g transform="translate(312 112) rotate(20)"><circle r="36" fill="#fff" stroke="#e79ab8" stroke-width="5"/><circle r="28" fill="#eaf6ff"/><path d="M-14-10q8-12 22-8" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/><rect x="-6" y="38" width="12" height="44" rx="6" fill="#e79ab8"/></g>`;break;
+    case 'towel': eyes=closed;
+      props=`<path d="M148 86Q146 30 200 28Q254 30 252 86Q200 64 148 86Z" fill="#fff" stroke="#f3c4d6" stroke-width="2"/><path d="M160 74Q200 52 240 74M168 54Q200 40 232 54" stroke="#f3c4d6" stroke-width="3" fill="none"/>
+      <g fill="#fff" opacity=".95"><circle cx="176" cy="128" r="5"/><circle cx="224" cy="128" r="5"/></g>`;break;
+    case 'yoga': eyes=closed; mouth=`<path d="M188 138Q200 150 212 138" stroke="#a0455e" stroke-width="2.6" fill="none" stroke-linecap="round"/>`;
+      props=`<g fill="${s}" stroke="#00000020"><ellipse cx="158" cy="168" rx="12" ry="20" transform="rotate(-20 158 168)"/><ellipse cx="242" cy="168" rx="12" ry="20" transform="rotate(20 242 168)"/></g><g fill="#ffd36b"><path d="M330 56l4 10 10 4-10 4-4 10-4-10-10-4 10-4Z"/></g>`;break;
+    case 'food': eyes=closed;
+      props=`<g transform="translate(296 168)"><circle cx="16" cy="22" r="18" fill="#e5586a"/><circle cx="46" cy="28" r="18" fill="#f08a3c"/><path d="M16 6q4-8 12-6" stroke="#4a8a55" stroke-width="3" fill="none"/><ellipse cx="34" cy="52" rx="26" ry="9" fill="#8fc48f"/></g>`;break;
+    default: eyes=closed; // leaves
+  }
+  return `<svg viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ilustração: mulher cuidando da pele">
+  <defs><linearGradient id="g${k}${v}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${bg[0]}"/><stop offset="1" stop-color="${bg[1]}"/></linearGradient></defs>
+  <rect width="400" height="240" fill="url(#g${k}${v})"/>${deco}${hairBack}
+  <path d="M104 240Q112 192 184 188L216 188Q288 192 296 240Z" fill="${c}"/><path d="M184 188Q200 206 216 188" fill="${s}"/>
+  <rect x="184" y="150" width="32" height="44" fill="${s}"/><rect x="184" y="150" width="32" height="14" fill="#000" opacity=".08"/>
+  <circle cx="154" cy="112" r="8" fill="${s}"/><circle cx="246" cy="112" r="8" fill="${s}"/>
+  <ellipse cx="200" cy="108" rx="46" ry="56" fill="${s}"/>
+  <path d="M152 106Q150 56 200 54Q250 56 248 106Q236 76 200 74Q164 76 152 106Z" fill="${h}"/>
+  ${eyes}<path d="M176 98q8-5 16-1M208 97q8-4 16 1" stroke="${h}" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  <path d="M200 112q-4 12 2 15" stroke="#00000030" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <circle cx="172" cy="126" r="7" fill="#ff8fb0" opacity=".28"/><circle cx="228" cy="126" r="7" fill="#ff8fb0" opacity=".28"/>
+  ${mouth}${props}</svg>`;
+}
+
+/* ============================================================
+   CONTEÚDO
+   campos: i=ícone, t=título, a=ilustração, b=parágrafos, l=lista, tip=[título,texto], cur=curiosidade,
+           warn=[título,texto], rec={n,ing,pre,av}
+   ============================================================ */
+const P=[
+{i:'🌸',t:'Bem-vinda ao seu momento',a:'leaves',b:['Cuidar da pele do rosto não precisa ser caro, nem complicado. Este e-book reúne <strong>informações baseadas no consenso dermatológico</strong>, rotinas simples, receitas caseiras seguras e muitas curiosidades para você entender o que está fazendo — e por quê.','Ao longo das páginas você vai ver o símbolo <strong>🧪 Receita caseira</strong>, o quadro roxo <strong>💡 Você sabia?</strong> e o quadro laranja <strong>⚠️ Atenção</strong>, que mostra os erros mais comuns.'],warn:['Aviso importante','Este material é educativo e não substitui o dermatologista. Pele com acne intensa, manchas que mudam, feridas que não cicatrizam ou qualquer dúvida merecem avaliação profissional.'],tip:['Como usar','Toque em ☰ para o sumário, em A+ para aumentar a letra e arraste a página para o lado para virar.']},
+{i:'📖',t:'Sumário',a:'mirror',toc:true},
+{i:'🧬',t:'Anatomia da pele em 1 minuto',a:'serum',b:['A pele tem três camadas: a <strong>epiderme</strong> (a mais externa, que você vê e toca), a <strong>derme</strong> (onde ficam colágeno, elastina e vasos sanguíneos) e a <strong>hipoderme</strong> (gordura que protege e amortece).','A camada mais externa da epiderme, o <strong>estrato córneo</strong>, funciona como um muro: células achatadas (os "tijolos") unidas por gorduras como as ceramidas (a "argamassa"). É essa barreira que mantém a água dentro e as agressões fora.'],cur:'A pele é o maior órgão do corpo: no adulto cobre cerca de 2 m² e representa algo em torno de 15% do peso corporal. A epiderme se renova por completo, em média, a cada 4 semanas — e esse ciclo vai ficando mais lento com a idade.'},
+{i:'🔍',t:'Descubra o seu tipo de pele',a:'mirror',b:['Lave o rosto com um sabonete suave, seque sem esfregar e <strong>não aplique nada por 1 hora</strong>. Depois observe:'],l:['<strong>Normal:</strong> confortável, sem brilho excessivo nem repuxamento.','<strong>Seca:</strong> repuxa, pode descamar e parece opaca.','<strong>Oleosa:</strong> brilho em todo o rosto, poros evidentes, tendência a cravos.','<strong>Mista:</strong> brilho na testa, nariz e queixo (zona T); bochechas normais ou secas.','<strong>Sensível:</strong> arde, avermelha ou coça com facilidade — pode vir junto com qualquer tipo acima.'],rec:{n:'Teste do lenço de papel',ing:['1 lenço de papel fino (ou papel de seda)'],pre:['Ao acordar, sem produtos no rosto, pressione o lenço na testa, nariz, bochechas e queixo.','Contra a luz: marcas de óleo em todas as áreas = oleosa; só na zona T = mista; nenhuma = normal ou seca.'],av:'Seca (falta de óleo) é diferente de desidratada (falta de água): pele oleosa também pode estar desidratada.'},tip:['Lembrete','O tipo de pele muda com clima, idade, hormônios e produtos. Reavalie a cada estação.']},
+{i:'🌍',t:'Fototipos: o que o sol faz na sua pele',a:'sun',b:['Dermatologistas classificam a pele em 6 fototipos (escala de Fitzpatrick), do I (muito clara, queima fácil e quase nunca bronzeia) ao VI (pele negra, que raramente queima).','Peles mais escuras têm mais melanina e maior proteção natural contra queimaduras, mas <strong>não são imunes</strong> a manchas, envelhecimento solar nem câncer de pele. O melasma e a hiperpigmentação pós-inflamatória, aliás, são mais frequentes em peles morenas e negras.'],tip:['Vale para todas','Todo mundo precisa de protetor solar diário. O que muda é a textura: peles negras costumam preferir fórmulas sem aspecto esbranquiçado, como as com cor ou os filtros químicos modernos.']},
+{i:'💧',t:'Limpeza que respeita',a:'towel',b:['Limpar remove suor, poluição, excesso de oleosidade e resíduos de produtos. A pele saudável tem pH levemente ácido (em torno de 4,5 a 5,5), por isso o ideal é um <strong>sabonete facial suave</strong>, sem sabão em barra e sem perfume forte.','Lave de manhã e à noite. Pela manhã basta um sabonete suave ou até só água se a pele for seca. À noite a limpeza é obrigatória, principalmente se você usou protetor solar ou maquiagem.'],l:['Use água <strong>morna</strong>, nunca muito quente.','Massageie por 30 segundos com a ponta dos dedos.','Seque com toalha limpa, batendo de leve.','Evite buchas e esponjas ásperas no rosto.']},
+{i:'🧼',t:'Dupla limpeza (double cleansing)',a:'towel',b:['Protetor solar resistente à água e maquiagem não saem só com sabonete. A técnica coreana de dupla limpeza usa dois passos: primeiro um produto oleoso, depois o sabonete.'],rec:{n:'Demaquilante caseiro de óleo vegetal',ing:['1 colher de sopa de óleo de jojoba, amêndoas doces ou semente de uva (use apenas um, de boa procedência)'],pre:['Com o rosto seco, massageie o óleo por 1 minuto, inclusive nos cílios (de olhos fechados).','Molhe as mãos, massageie de novo até o óleo ficar leitoso (emulsionar).','Enxágue e finalize com o sabonete facial.'],av:'Evite óleos muito pesados se você tem acne (coco e oliva podem entupir poros em algumas pessoas). Faça o teste de sensibilidade (página 26).'},cur:'A dupla limpeza vem da Coreia, onde a rotina de cuidados com a pele é tratada quase como um ritual diário. Ela popularizou o "skincare em camadas" no mundo todo.'},
+{i:'🧴',t:'Hidratação: água, maciez e proteção',a:'cream',b:['Hidratar é manter a água na pele e reforçar a barreira. Os hidratantes combinam três tipos de ingredientes:'],l:['<strong>Umectantes</strong> (ácido hialurônico, glicerina, ureia): atraem água.','<strong>Emolientes</strong> (ceramidas, esqualano, manteigas): preenchem as falhas entre as células e dão maciez.','<strong>Oclusivos</strong> (vaselina, dimeticone, óleos): formam uma película que evita a perda de água.'],tip:['Truque de ouro','Aplique o hidratante com a pele ainda levemente úmida, logo depois do banho ou da limpeza, para "selar" a água.'],cur:'Pele oleosa também precisa de hidratação. Quando falta água, ela pode produzir ainda mais sebo. Prefira géis ou fluidos sem óleo (oil-free).'},
+{i:'☀️',t:'Protetor solar: o anti-idade nº 1',a:'sun',b:['A radiação ultravioleta é a principal causa do envelhecimento visível da pele e do câncer de pele. Estimativas apontam que cerca de <strong>80% dos sinais de envelhecimento facial</strong> têm relação com o sol.','Use <strong>FPS 30 ou mais, com proteção UVA</strong>, todos os dias, mesmo em dia nublado. Os raios UVA atravessam nuvens e vidros de janela.'],l:['Quantidade: aproximadamente <strong>duas linhas do comprimento dos dedos indicador e médio</strong> para rosto e pescoço.','Aplique 15 a 20 minutos antes de sair.','Reaplique a cada 2 a 3 horas se estiver ao sol, suando ou se secou o rosto.','Não esqueça orelhas, pescoço, colo e o dorso das mãos.'],warn:['Mito comum','Maquiagem com FPS não substitui o protetor: ninguém passa a quantidade necessária de base ou pó para atingir o FPS do rótulo.']},
+{i:'✨',t:'Esfoliação sem agressão',a:'cream',b:['Esfoliar remove células mortas e deixa a pele mais uniforme e luminosa. Existem dois tipos: <strong>físico</strong> (grãos) e <strong>químico</strong> (ácidos suaves). Em geral, o químico em baixa concentração é mais gentil e mais uniforme.','Frequência: de <strong>1 a 2 vezes por semana</strong>. Pele sensível, com acne inflamada ou em tratamento com retinoide deve ir com mais calma.'],rec:{n:'Esfoliante suave de aveia',ing:['1 colher de sopa de aveia em flocos finos (triture se necessário)','1 colher de sopa de iogurte natural sem açúcar ou água'],pre:['Misture até virar uma pasta cremosa.','Massageie com a ponta dos dedos em movimentos circulares por 30 segundos, sem pressionar.','Enxágue com água morna.'],av:'Não use açúcar, sal ou fubá grosso no rosto: os grãos são irregulares e podem causar microlesões.'},cur:'Conta a tradição que Cleópatra tomava banhos de leite: o ácido lático do leite é um ácido suave, usado até hoje em cosméticos.'},
+{i:'🍊',t:'Vitamina C: a luz da manhã',a:'serum',b:['A vitamina C (ácido ascórbico) é um antioxidante que neutraliza radicais livres gerados por sol e poluição, ajuda a uniformizar o tom e participa da produção de colágeno.','Use <strong>de manhã, após limpar e antes do hidratante e do protetor solar</strong>. Concentrações comuns ficam entre 5% e 20%. Comece com as menores se a pele for sensível.'],l:['Guarde longe da luz e do calor, em frasco escuro e bem fechado.','Se o sérum ficar bem escuro (laranja-marrom), ele oxidou — troque.','O efeito aparece de forma gradual, em semanas a meses.'],tip:['Combinação poderosa','Vitamina C + protetor solar pela manhã se complementam: o antioxidante reforça a proteção contra o dano do sol, mas nunca substitui o filtro.']},
+{i:'🔬',t:'Niacinamida: a coringa',a:'serum',b:['A niacinamida (vitamina B3) é bem tolerada pela maioria das peles. Ajuda a regular a oleosidade, melhora a aparência dos poros, reforça a barreira e atenua manchas e vermelhidão.','Concentrações entre 2% e 5% já funcionam; acima de 10% algumas pessoas sentem ardência. Pode ser usada de manhã e/ou à noite.'],cur:'Estudos mostraram que a niacinamida também ajuda a reduzir lesões inflamatórias de acne e pode ser usada junto com quase todos os outros ativos.'},
+{i:'🌙',t:'Retinoides: renovação celular',a:'sleep',b:['Derivados da vitamina A (retinol, retinal, tretinoína) estão entre os ativos com mais evidência científica contra rugas finas, manchas e acne. Eles aceleram a renovação celular e estimulam o colágeno.','Use <strong>somente à noite</strong>, comece 1 a 2 vezes por semana, em pouca quantidade (uma ervilha para o rosto todo) e aumente aos poucos. Descamação e vermelhidão leves no início são comuns.'],warn:['Gravidez e amamentação','Retinoides não devem ser usados na gestação. Se há chance de engravidar ou você amamenta, converse com seu médico antes de usar.'],tip:['Método sanduíche','Se a pele irritar: hidratante, depois o retinol, depois outra camada fina de hidratante. E não dispense o protetor solar no dia seguinte.']},
+{i:'💦',t:'Ácido hialurônico',a:'serum',b:['O ácido hialurônico é uma molécula que atrai e segura água. Ela existe naturalmente na pele e diminui com a idade. Nos cosméticos, devolve viço, suaviza linhas de desidratação e deixa a pele mais "rechonchuda".','Moléculas de pesos diferentes agem em profundidades diferentes: as maiores hidratam a superfície, as menores penetram um pouco mais.'],tip:['Aplicação perfeita','Passe sobre a pele úmida (água termal ou rosto recém-lavado) e sele com hidratante. Em clima muito seco, aplicado em pele seca ele pode "puxar" água de dentro da pele.'],cur:'Uma molécula de ácido hialurônico pode reter até cerca de 1.000 vezes o seu peso em água.'},
+{i:'🧪',t:'Ácidos: AHA, BHA e PHA',a:'cream',b:['Os ácidos usados em casa são os suaves, em baixa concentração:'],l:['<strong>AHA (glicólico, lático, mandélico):</strong> solúveis em água, agem na superfície. O mandélico é o mais gentil.','<strong>BHA (ácido salicílico):</strong> solúvel em óleo, entra no poro; ótimo para cravos e pele oleosa.','<strong>PHA (gluconolactona):</strong> molécula maior, muito suave, boa para peles sensíveis.'],warn:['Não exagere','Ácidos aumentam a sensibilidade ao sol. Use protetor todo dia e não combine vários ácidos fortes na mesma noite. Ardência persistente é sinal para parar.']},
+{i:'👁️',t:'Cuidados com a área dos olhos',a:'cucumber',b:['A pele das pálpebras e do entorno tem apenas cerca de 0,5 mm de espessura, quase não tem glândulas de óleo e é a primeira a mostrar cansaço. Use produtos específicos ou fórmulas muito suaves, sempre com o dedo anelar, em batidinhas leves.'],rec:{n:'Compressa gelada de chá verde ou camomila',ing:['1 sachê de chá verde ou camomila','1/2 xícara de água quente'],pre:['Faça o chá, retire o sachê e deixe gelar na geladeira por 20 minutos.','Com os olhos fechados, apoie os sachês frios nas pálpebras por 10 minutos.'],av:'Se a camomila coçar ou os olhos lacrimejarem, retire e lave com água. Quem tem alergia a plantas da família das margaridas deve evitar a camomila.'},cur:'O frio contrai os vasos sanguíneos e reduz o inchaço de forma temporária. Já o chá verde contém cafeína e antioxidantes, e é por isso que aparece em muitos cosméticos para olheiras.'},
+{i:'🌑',t:'Olheiras: por que aparecem?',a:'sleep',b:['Existem três causas principais, e elas podem se misturar:'],l:['<strong>Pigmentar:</strong> excesso de melanina (comum em peles morenas e negras e tem componente genético).','<strong>Vascular:</strong> a pele fina deixa os vasos aparecerem; tom arroxeado ou azulado.','<strong>Estrutural:</strong> sulco sob os olhos que cria sombra, ligado à perda de volume.'],tip:['O que ajuda','Protetor solar diário, vitamina C, niacinamida e sono regular ajudam nas olheiras pigmentares; compressas frias ajudam nas vasculares. As estruturais costumam precisar de avaliação do dermatologista.']},
+{i:'💋',t:'Lábios macios',a:'lips',b:['Os lábios não têm glândulas sebáceas e têm uma pele muito fina, por isso ressecam fácil. Hidrate durante o dia e passe protetor labial com FPS.'],rec:{n:'Esfoliante de lábios de mel e açúcar',ing:['1 colher de chá de açúcar cristal fino ou refinado','1/2 colher de chá de mel'],pre:['Misture e massageie nos lábios úmidos por 20 segundos, bem de leve.','Retire com um pano úmido e passe hidratante labial.'],av:'Faça no máximo 1 vez por semana e nunca em lábios com feridas, herpes ou rachaduras profundas.'},tip:['Bálsamo caseiro','Manteiga de karité ou cacau derretida em banho-maria forma uma película hidratante. Mel puro também ajuda a segurar a umidade.'],cur:'Quem tem o hábito de lamber os lábios ressecados piora o problema: a saliva evapora e leva a hidratação junto.'},
+{i:'🦢',t:'Pescoço e colo',a:'cream',b:['A pele do pescoço e do colo é fina, tem poucas glândulas de óleo e costuma ser esquecida. É uma das áreas que primeiro denunciam o envelhecimento e o dano solar.','Estenda sérum, hidratante e protetor solar do rosto até o colo, sempre com movimentos de baixo para cima.'],cur:'O uso prolongado do celular com a cabeça abaixada ("tech neck") sobrecarrega o pescoço e pode acentuar linhas horizontais; vale levantar o aparelho à altura dos olhos.'},
+{i:'🏺',t:'Máscara de argila',a:'mask',b:['As argilas absorvem excesso de oleosidade e impurezas. A verde é mais purificante (peles oleosas e mistas); a branca e a rosa são mais suaves (peles normais, secas e sensíveis).'],rec:{n:'Máscara purificante de argila verde',ing:['1 colher de sopa de argila verde cosmética','Água mineral ou chá de camomila gelado, até dar ponto de creme','1 colher de chá de mel (opcional, para dar maciez)'],pre:['Misture em tigela de vidro, cerâmica ou plástico.','Aplique em camada fina, poupando a área dos olhos e dos lábios.','Deixe agir por 8 a 10 minutos. <strong>Não deixe secar completamente.</strong>','Enxágue com água morna e hidrate.'],av:'Use 1 vez por semana. Se a pele puxar ou ficar vermelha, diminua o tempo. Peles secas devem usar a argila branca e por menos tempo.'},cur:'A argila verde é rica em minerais como silício, magnésio e ferro, e seu uso na pele é registrado há séculos em muitas culturas.'},
+{i:'🥣',t:'Máscara de aveia e mel',a:'mask',b:['A aveia contém betaglucanas e é tradicionalmente usada para acalmar pele sensível e com coceira. O mel é um umectante natural.'],rec:{n:'Máscara calmante de aveia e mel',ing:['2 colheres de sopa de aveia em flocos finos','1 colher de sopa de mel','2 colheres de sopa de água morna ou leite'],pre:['Misture até formar pasta cremosa.','Aplique no rosto limpo por 10 a 15 minutos.','Retire com água morna, massageando de leve.'],av:'Mel não é indicado a quem tem alergia a produtos de abelha. Faça o teste de sensibilidade antes.'},tip:['Para quem?','Boa para pele sensível, seca ou irritada pelo sol e pelo vento. Não substitui tratamento médico para dermatites.']},
+{i:'🥛',t:'Máscara de iogurte natural',a:'mask',b:['O iogurte natural contém ácido lático em pequena quantidade, o que dá uma esfoliação muito suave e deixa a pele macia e luminosa.'],rec:{n:'Máscara de iogurte e mel',ing:['2 colheres de sopa de iogurte natural integral, sem açúcar','1 colher de chá de mel'],pre:['Misture e aplique no rosto limpo.','Deixe 10 minutos e enxágue com água morna.'],av:'Use iogurte gelado se a pele estiver inchada ou com vermelhidão. Faça no máximo 1 a 2 vezes por semana.'},cur:'O ácido lático é um alfa-hidroxiácido (AHA). Os produtos profissionais usam concentrações bem maiores e controladas; a versão caseira é apenas um "empurrãozinho" suave.'},
+{i:'🥑',t:'Máscara de banana e abacate',a:'food',b:['Abacate e banana são ricos em gorduras boas, vitaminas e água, e deixam a pele seca mais macia e confortável.'],rec:{n:'Máscara nutritiva de abacate e banana',ing:['2 colheres de sopa de abacate maduro amassado','1/2 banana madura amassada','1 colher de chá de azeite ou óleo de amêndoas (opcional)'],pre:['Amasse bem até virar um creme sem pedaços.','Aplique no rosto limpo por 15 minutos.','Retire com água morna e hidrate.'],av:'Não guarde sobras: a mistura estraga rápido. Faça na hora e descarte o que sobrar.'},cur:'O abacate contém ácidos graxos monoinsaturados e vitamina E, nutrientes que também aparecem na lista de ingredientes de muitos hidratantes.'},
+{i:'🌼',t:'Compressa calmante de camomila',a:'tea',b:['Quando a pele está vermelha, quente ou com sensação de ardência leve, uma compressa fria ajuda a aliviar o desconforto.'],rec:{n:'Compressa de camomila gelada',ing:['1 colher de sopa de camomila seca (ou 2 sachês)','1 xícara de água fervente'],pre:['Faça a infusão por 10 minutos e coe bem.','Leve à geladeira por 30 minutos.','Molhe uma gaze ou um algodão limpo e apoie no rosto por 5 a 10 minutos.'],av:'Prepare a cada uso e jamais reutilize infusão de dias anteriores. Não aplique em pele com feridas abertas.'},tip:['Sensação de alívio','O efeito é principalmente do frio e da hidratação. Se a vermelhidão persistir por dias ou vier com dor, procure um médico.']},
+{i:'🚫',t:'O que NÃO passar no rosto',a:'leaves',b:['Muita "dica de internet" machuca a pele. Evite:'],l:['<strong>Limão e outros cítricos:</strong> em contato com a pele e com o sol causam fitofotodermatite, com manchas escuras e até bolhas que podem durar meses.','<strong>Bicarbonato de sódio:</strong> o pH é muito alcalino (cerca de 8), destrói a barreira e ressecca.','<strong>Vinagre puro, álcool e perfume:</strong> irritam e queimam.','<strong>Pasta de dente na espinha:</strong> contém ingredientes irritantes e pode manchar.','<strong>Açúcar, sal ou grãos grossos:</strong> riscam a pele.','<strong>Canela, pimenta, alho, gengibre e óleos essenciais puros:</strong> podem causar queimadura química e alergia.','<strong>Pasta de maquiagem ou cosmético vencido.</strong>'],warn:['Regra de ouro','Natural não é sinônimo de seguro: muitas plantas contêm substâncias alérgenas ou irritantes. Na dúvida, não passe.']},
+{i:'🧷',t:'Teste de sensibilidade',a:'cream',b:['Antes de usar qualquer produto novo, caseiro ou comprado, faça o teste na dobra do braço (ou atrás da orelha):'],l:['Aplique uma pequena quantidade na área limpa.','Deixe por 24 a 48 horas, sem lavar se o produto for do tipo "sem enxágue".','Se aparecer vermelhidão, coceira, inchaço ou bolhas, lave bem e <strong>não use no rosto</strong>.'],tip:['Faça um produto novo por vez','Se você introduz três produtos ao mesmo tempo e a pele reage, é impossível saber quem causou. Espere pelo menos 1 a 2 semanas entre novidades.']},
+{i:'🌿',t:'Acne: o que realmente funciona',a:'serum',b:['A acne surge quando poros se obstruem por sebo e células mortas, bactérias proliferam e a pele inflama. Os hormônios têm papel central — por isso é comum na adolescência, antes da menstruação e em fases de mudança hormonal.','Ativos com boa evidência: ácido salicílico, peróxido de benzoíla, adapaleno, niacinamida e ácido azelaico. Acne com nódulos, dor, cicatrizes ou que não melhora em 2 a 3 meses merece dermatologista.'],l:['<strong>Não espreme:</strong> aumenta a inflamação, espalha bactéria e deixa marcas.','Adesivos hidrocoloides ajudam a absorver a secreção e evitam que você mexa.','Troque a fronha toda semana e limpe o celular.'],cur:'Estudos associam dietas de alta carga glicêmica (muito açúcar e farináceos refinados) a mais acne em algumas pessoas, mas a relação varia muito de pessoa para pessoa.'},
+{i:'🟤',t:'Manchas e melasma',a:'sun',b:['As manchas surgem quando a pele produz melanina em excesso por sol, hormônios, inflamação (como depois de espinhas) ou fatores genéticos. O <strong>melasma</strong> é o tipo mais comum nas mulheres e é fortemente ligado a hormônios e à luz.','O pilar do tratamento é a <strong>proteção diária</strong>, inclusive contra a luz visível — o que torna protetores com cor (que têm pigmentos de óxido de ferro) grandes aliados.'],l:['Ativos clareadores: vitamina C, niacinamida, ácido azelaico, ácido tranexâmico, ácido kójico.','Evite esfregar, depilar com cera ou irritar a área.','Chapéu e sombra ajudam muito.'],warn:['Cuidado','Mancha que cresce, muda de cor, sangra ou tem bordas irregulares precisa de avaliação médica urgente (veja ABCDE na página 44).']},
+{i:'🕳️',t:'Poros: verdades e mitos',a:'mirror',b:['<strong>Poros não abrem e fecham.</strong> Eles não têm músculos. Água quente ou fria não muda o tamanho do poro; o que muda é a aparência por causa do óleo e da sujeira acumulados.','O tamanho do poro depende muito da genética, da oleosidade e da idade. O que pode ajudar a diminuir a aparência: limpeza adequada, ácido salicílico, niacinamida, retinoide e protetor solar (o sol enfraquece o colágeno ao redor do poro e o deixa maior).'],cur:'A "pele de porcelana" que vemos em fotos é, muitas vezes, resultado de luz, filtro e maquiagem. Poros visíveis são totalmente normais.'},
+{i:'🛡️',t:'Barreira cutânea: a base de tudo',a:'cream',b:['Quando a barreira está danificada, a pele arde, descasca, avermelha e reage a produtos que antes tolerava. Causas típicas: excesso de ácidos e esfoliação, sabonetes agressivos, água muito quente, sol e clima seco.','Se isso acontece, faça uma pausa dos ativos fortes e use só: limpeza suave, hidratante reparador e protetor solar por 1 a 2 semanas.'],l:['<strong>Ceramidas, colesterol e ácidos graxos:</strong> reconstroem a "argamassa".','<strong>Pantenol (vitamina B5):</strong> calma e hidrata.','<strong>Centella asiática:</strong> conhecida por seu efeito calmante.','<strong>Glicerina e ureia em baixa concentração:</strong> hidratam.']},
+{i:'🌞',t:'Rotina da manhã',a:'sun',b:['De manhã, o objetivo é <strong>proteger</strong> a pele do dia. Uma rotina enxuta funciona:'],l:['<strong>1. Limpar</strong> com sabonete suave (ou só água para peles secas).','<strong>2. Antioxidante</strong> (vitamina C) — opcional.','<strong>3. Hidratante</strong> adequado ao seu tipo de pele.','<strong>4. Protetor solar</strong> FPS 30+ com proteção UVA.'],tip:['Menos é mais','Três passos feitos todos os dias valem mais do que dez passos feitos de vez em quando.']},
+{i:'🌜',t:'Rotina da noite',a:'sleep',b:['À noite o objetivo é <strong>limpar e reparar</strong>. É quando a pele aumenta a renovação celular.'],l:['<strong>1. Demaquilar</strong> e limpar (dupla limpeza se usou protetor ou maquiagem).','<strong>2. Tratar:</strong> retinoide, ácidos ou sérum, alternando noites.','<strong>3. Hidratar:</strong> creme mais nutritivo que o da manhã.','<strong>4. Lábios:</strong> bálsamo hidratante.'],cur:'Durante o sono profundo a pele aumenta o fluxo sanguíneo e a produção de colágeno; por isso a noite é a melhor hora para os tratamentos.'},
+{i:'📋',t:'Rotina ideal para cada tipo de pele',a:'mirror',b:['Use como ponto de partida e ajuste conforme a resposta da sua pele:'],l:['<strong>Oleosa:</strong> sabonete em gel, sérum de niacinamida, hidratante em gel oil-free, protetor fluido ou com toque seco; BHA 2 a 3 vezes por semana.','<strong>Seca:</strong> limpador cremoso, sérum de ácido hialurônico, hidratante rico em ceramidas, protetor hidratante.','<strong>Mista:</strong> gel suave, hidratante leve na zona T e mais rico nas bochechas.','<strong>Sensível:</strong> poucos produtos, sem perfume, com pantenol e ceramidas; introduza ativos 1 por vez.','<strong>Madura (45+):</strong> retinoide à noite, vitamina C de manhã, hidratante nutritivo e protetor sempre.']},
+{i:'🪨',t:'Massagem facial com Gua Sha',a:'guasha',b:['O Gua Sha é uma técnica da medicina tradicional chinesa feita com uma pedra lisa (quartzo, jade, etc.). Na prática, é uma massagem com instrumento que estimula a circulação, alivia a tensão muscular e dá uma sensação de relaxamento. Os efeitos de "esculpir" o rosto são temporários.'],l:['Aplique antes um óleo ou sérum para a pedra deslizar.','Use pressão leve, em movimentos <strong>do centro do rosto para fora e para cima</strong>.','Passe 5 a 10 vezes em cada região, por 3 a 5 minutos.','Limpe a pedra com água e sabão após o uso.'],warn:['Não faça se','Você estiver com acne inflamada, queimadura, ferida, tratamento recente com ácidos ou procedimentos estéticos. Nunca pressione forte: não deve marcar a pele.']},
+{i:'💚',t:'Rolo de jade e gelo',a:'guasha',b:['O rolo facial (jade, quartzo ou aço) e a massagem com gelo ajudam a reduzir o inchaço matinal e dão a sensação de rosto "acordado".','Deixe o rolo na geladeira (não no congelador) por 15 minutos e passe com leveza do centro para as laterais, e depois descendo pelo pescoço.'],tip:['Cuidado com o gelo','Nunca aplique gelo diretamente na pele por muito tempo: envolva em um pano fino e limite a 1 minuto por região para não causar queimadura pelo frio.'],cur:'O inchaço do rosto ao acordar vem de líquido que se acumula durante a noite quando ficamos deitadas. Em geral ele some em até uma ou duas horas depois de levantar.'},
+{i:'🧘',t:'Yoga facial: funciona?',a:'yoga',b:['A chamada "yoga facial" são exercícios para os músculos do rosto. As evidências científicas ainda são limitadas, e alguns estudos pequenos sugerem melhora de firmeza e volume nas bochechas após meses de prática.','Exagerar em expressões repetidas pode acentuar linhas de expressão. Se você gosta, faça de forma suave, como um momento de relaxamento.'],l:['Relaxe a mandíbula e a testa durante o dia.','Evite franzir a testa ao olhar a tela.','Pratique 5 minutos de respiração profunda, que reduz a tensão do rosto.']},
+{i:'🥗',t:'Alimentação e pele',a:'food',b:['Não existe "alimento milagroso", mas o padrão alimentar influencia a saúde da pele. Dietas ricas em frutas, legumes, grãos integrais, peixes e azeite têm sido associadas a menos inflamação.'],l:['<strong>Antioxidantes:</strong> frutas vermelhas, cítricos, folhas escuras, tomate cozido.','<strong>Ômega 3:</strong> sardinha, salmão, chia, linhaça, nozes.','<strong>Proteínas:</strong> importantes para a produção de colágeno.','<strong>Menos:</strong> excesso de açúcar e ultraprocessados.'],cur:'A glicação é uma reação entre açúcar e proteínas como o colágeno que o deixa mais rígido e amarelado. Ela acontece com o envelhecimento, e o excesso de açúcar no sangue pode acelerá-la.'},
+{i:'💧',t:'Água e a pele',a:'tea',b:['Beber água é essencial para a saúde, mas <strong>não existe uma "meta mágica"</strong> que deixe a pele hidratada por si só. Quem já está bem hidratada não ganha muito efeito visível ao beber água extra.','Um bom ponto de partida é beber água ao longo do dia e prestar atenção à cor da urina (amarelo bem claro costuma indicar boa hidratação). A pele se hidrata principalmente por cosméticos e proteção da barreira.'],tip:['Truque saboroso','Água com rodelas de pepino, hortelã ou frutas ajuda quem tem dificuldade de beber. Chás sem açúcar também contam.']},
+{i:'😴',t:'Sono e beleza',a:'sleep',b:['Durante o sono profundo há liberação do hormônio do crescimento e aumento da reparação dos tecidos. Pesquisas mostram que a privação de sono prejudica a barreira da pele e piora a aparência de rugas e olheiras.','Procure dormir de 7 a 9 horas, em quarto escuro e fresco, e evite telas 1 hora antes de deitar.'],cur:'Fronhas de cetim ou seda reduzem o atrito, e por isso são populares para proteger cabelos e evitar marcas de dobra no rosto. A evidência científica ainda é pequena, mas não faz mal e muita gente gosta.'},
+{i:'🧠',t:'Estresse, cortisol e pele',a:'yoga',b:['O estresse crônico eleva o cortisol, que pode aumentar a oleosidade, a inflamação (e a acne), atrasar a cicatrização e prejudicar a barreira da pele. Psoríase, dermatite e urticária também podem piorar.','Cuidar da mente é cuidar da pele. Pequenas pausas fazem diferença.'],l:['5 minutos de respiração lenta (inspire em 4 segundos, expire em 6).','Caminhada ao ar livre (com protetor solar!).','Rotina de skincare como momento de pausa, sem pressa.','Conversar com alguém e procurar ajuda profissional quando a ansiedade pesa.']},
+{i:'💄',t:'Maquiagem e higiene',a:'mirror',b:['Uma boa maquiagem depende de uma pele bem cuidada. Prefira bases leves, protetores com cor e corretivo só onde necessário. Remova toda a maquiagem antes de dormir.'],l:['<strong>Pincéis e esponjas:</strong> lave a cada 1 a 2 semanas com sabonete suave.','<strong>Rímel:</strong> troque a cada 3 meses para evitar infecções nos olhos.','<strong>Olhe o símbolo do pote aberto (PAO):</strong> ele indica em meses a validade após abrir (ex.: 12M).','Nunca divida maquiagem, principalmente de olhos e lábios.'],warn:['Produtos vencidos','Cosmético vencido ou mal guardado pode irritar a pele e causar infecções. Se mudou o cheiro, a cor ou a textura, descarte.']},
+{i:'🎀',t:'Cuidados em cada fase da vida',a:'leaves',b:['As necessidades da pele mudam com o tempo:'],l:['<strong>Até 25:</strong> foco em limpeza, hidratação e protetor solar. A acne é comum.','<strong>30 a 40:</strong> início de linhas finas; incluir antioxidante pela manhã e retinoide à noite.','<strong>40 a 50:</strong> mais ressecamento, perda de firmeza; cremes ricos e atenção a pescoço e colo.','<strong>Menopausa:</strong> queda do estrogênio reduz colágeno e hidratação; priorize hidratação, retinoide e protetor.','<strong>Gestação:</strong> melasma é comum. Evite retinoides e converse com seu médico sobre quais ativos são seguros.']},
+{i:'💡',t:'10 curiosidades sobre a pele',a:'mirror',b:['Para fechar com leveza:'],l:['Em média perdemos de 30 a 40 mil células da pele por minuto.','Boa parte da poeira de casa é composta de células de pele descamadas.','As impressões digitais se formam antes do nascimento e não mudam.','A pele das pálpebras é a mais fina do corpo; a da sola dos pés é a mais grossa.','O ácido hialurônico existe naturalmente no seu corpo, inclusive nas articulações.','A pele tem uma comunidade enorme de microrganismos (o microbioma), muitos deles benéficos.','Um bronzeado é, na prática, um sinal de que a pele sofreu dano e tentou se proteger.','Rugas de expressão se formam onde a pele se dobra repetidamente.','Cada pessoa tem, em média, de 2 a 4 milhões de glândulas sudoríparas.','A pele não "respira" como os pulmões: o que ela mais precisa é de barreira íntegra e hidratação.'],warn:['Atenção','Alguns números variam de acordo com a fonte e a pessoa: valem como ordem de grandeza.']},
+{i:'🩺',t:'Quando procurar o dermatologista',a:'serum',b:['Procure avaliação se houver:'],l:['Acne com nódulos, dor ou cicatrizes.','Manchas que mudam, crescem ou sangram.','Ferida que não cicatriza em 4 semanas.','Coceira intensa, descamação ou vermelhidão persistente.','Reação alérgica a produtos (inchaço, urticária, bolhas).','Qualquer dúvida sobre ativos fortes ou tratamentos na gestação.'],rec:{n:'Regra ABCDE das pintas',ing:['<strong>A</strong>ssimetria: um lado diferente do outro','<strong>B</strong>ordas irregulares','<strong>C</strong>or variada (vários tons)','<strong>D</strong>iâmetro maior que 6 mm','<strong>E</strong>volução: mudou de tamanho, cor ou forma'],pre:['Observe suas pintas no espelho uma vez por mês.','Se algum sinal chamar atenção, agende o dermatologista.'],av:'Este é um guia de observação e não faz diagnóstico.'}},
+{i:'📅',t:'Plano de 30 dias',a:'leaves',b:['Um roteiro simples para criar o hábito sem sobrecarregar a pele:'],l:['<strong>Semana 1:</strong> só limpar, hidratar e usar protetor solar todos os dias.','<strong>Semana 2:</strong> acrescente a vitamina C de manhã (comece em dias alternados).','<strong>Semana 3:</strong> acrescente a máscara semanal caseira (página 20 a 24) e faça o teste de sensibilidade antes.','<strong>Semana 4:</strong> se a pele estiver tranquila, inclua o retinoide à noite 1 vez por semana, aumentando devagar.'],tip:['Tire uma foto','Fotografe seu rosto com a mesma luz no dia 1 e no dia 30. A pele muda devagar e a comparação ajuda a ver o progresso.']},
+{i:'💖',t:'O ritual do amor-próprio',a:'mask',b:['A melhor rotina é aquela que você consegue manter, sem culpa e sem comparar sua pele com filtros de redes sociais. Pele de verdade tem poros, textura, sardas e expressão, e isso é bonito.','Celebre sua pele em todas as fases. Cuide com carinho, constância e informação confiável, e quando precisar, peça ajuda profissional.'],tip:['Mensagem final','Sua pele é a sua casa. Cuide dela com carinho, paciência e constância todos os dias. 🌸']}
+];
+/* a página 'toc' recebe o sumário gerado automaticamente */
+
+/* ============================================================
+   LEITOR
+   ============================================================ */
+const $=id=>document.getElementById(id);
+const stage=$('stage'),N=P.length;
+let cur=0,busy=false,started=false,fs=1;
+$('tot').textContent=N;$('badge').textContent='E-book interativo · '+N+' páginas';
+$('coverArt').innerHTML=art('mask',0);
+
+function pageHTML(i){
+  const d=P[i];
+  const img=PHOTOS[i+1]?`<img src="${PHOTOS[i+1]}" alt="Mulher cuidando da pele" loading="lazy">`:art(d.a||'leaves',i);
+  let h=`<div class="art">${img}</div><div class="inner"><div class="num">página ${String(i+1).padStart(2,'0')} · de ${N}</div><h2><span class="ic">${d.i}</span><span>${d.t}</span></h2>`;
+  if(d.toc){
+    h+='<div class="toc">'+P.map((p,j)=>j===i?'':`<a data-go="${j}"><span>${j+1}</span>${p.t}</a>`).join('')+'</div>';
+  }else{
+    (d.b||[]).forEach(x=>h+=`<p>${x}</p>`);
+    if(d.l)h+='<ul class="tl">'+d.l.map(x=>`<li>${x}</li>`).join('')+'</ul>';
+    if(d.rec){
+      const isList=d.rec.n.indexOf('ABCDE')>-1;
+      h+=`<div class="rec"><h4>🧪 ${isList?'Guia rápido':'Receita caseira'}: ${d.rec.n}</h4><h5>${isList?'Os sinais':'Ingredientes'}</h5><ul>${d.rec.ing.map(x=>`<li>${x}</li>`).join('')}</ul><h5>${isList?'O que fazer':'Modo de fazer'}</h5><ol>${d.rec.pre.map(x=>`<li>${x}</li>`).join('')}</ol><p class="av">⚠️ ${d.rec.av}</p></div>`;
+    }
+    if(d.tip)h+=`<div class="box tip"><h4>${d.tip[0]}</h4><p>${d.tip[1]}</p></div>`;
+    if(d.cur)h+=`<div class="box cur"><h4>💡 Você sabia?</h4><p>${d.cur}</p></div>`;
+    if(d.warn)h+=`<div class="box warn"><h4>⚠️ ${d.warn[0]}</h4><p>${d.warn[1]}</p></div>`;
+  }
+  return h+'</div>';
+}
+function mount(i,cls){
+  const el=document.createElement('div');el.className='page '+(cls||'');el.innerHTML=pageHTML(i);
+  el.querySelectorAll('[data-go]').forEach(a=>a.addEventListener('click',()=>goTo(+a.dataset.go)));
+  stage.appendChild(el);return el;
+}
+function ui(){
+  $('cur').textContent=cur+1;$('fill').style.width=((cur+1)/N*100)+'%';
+  $('prev').disabled=cur===0;$('next').disabled=cur===N-1;
+  try{localStorage.setItem('be_page',String(cur))}catch(e){}
+}
+function goTo(n){
+  if(busy||n<0||n>=N||n===cur)return;
+  busy=true;const fwd=n>cur;
+  const old=stage.querySelector('.page:last-child');
+  const nw=mount(n,fwd?'in-next':'in-prev');
+  if(old)old.classList.add(fwd?'out-next':'out-prev');
+  cur=n;ui();
+  setTimeout(()=>{stage.querySelectorAll('.page').forEach(p=>{if(p!==nw)p.remove()});nw.className='page';nw.scrollTop=0;busy=false},780);
+}
+const next=()=>goTo(cur+1),prev=()=>goTo(cur-1);
+$('next').addEventListener('click',next);$('prev').addEventListener('click',prev);
+$('tocBtn').addEventListener('click',()=>goTo(1));
+$('fsBtn').addEventListener('click',()=>{fs=fs>=1.3?1:fs+.15;document.documentElement.style.setProperty('--fs',fs);$('fsBtn').textContent=fs>=1.3?'A−':'A+'});
+
+/* gestos: só vira a página em arrasto horizontal claro (não atrapalha a rolagem) */
+let sx=0,sy=0,tracking=false;
+stage.addEventListener('touchstart',e=>{if(!started)return;sx=e.touches[0].clientX;sy=e.touches[0].clientY;tracking=true},{passive:true});
+stage.addEventListener('touchend',e=>{
+  if(!tracking)return;tracking=false;
+  const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;
+  if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.6){dx<0?next():prev()}
+},{passive:true});
+document.addEventListener('keydown',e=>{
+  if(!started){if(e.key==='Enter')$('startBtn').click();return}
+  if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();next()}
+  if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();prev()}
+});
+
+$('startBtn').addEventListener('click',()=>{
+  $('cover').classList.add('hidden');$('app').classList.add('visible');started=true;
+  try{const s=parseInt(localStorage.getItem('be_page'),10);if(s>0&&s<N)cur=s}catch(e){}
+  mount(cur);ui();
+  setTimeout(()=>$('hint').classList.add('show'),700);setTimeout(()=>$('hint').classList.remove('show'),5000);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Confirmando pagamento · Beleza Essencial</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem;font-family:'Quicksand',sans-serif;color:#3e2c3b;background:linear-gradient(160deg,#fff2f8,#fce3ee)}
+.card{background:#fff;border:1px solid #ffd6e5;border-radius:26px;padding:2.2rem 1.6rem;max-width:460px;width:100%;text-align:center;box-shadow:0 30px 60px -30px rgba(190,100,140,.5)}
+h1{font-family:'Playfair Display',serif;color:#a64b6e;font-size:1.7rem;margin:.6rem 0}
+p{color:#5d4352;font-weight:600;margin:.6rem 0}
+.big{font-size:2.6rem}
+a.btn,button{display:inline-block;margin-top:1rem;font:inherit;font-weight:700;color:#fff;border:none;cursor:pointer;text-decoration:none;padding:.9rem 2rem;border-radius:50px;background:linear-gradient(135deg,#c4638a,#a64b6e)}
+.spin{width:38px;height:38px;border:4px solid #ffd6e5;border-top-color:#a64b6e;border-radius:50%;margin:1rem auto;animation:s 1s linear infinite}
+@keyframes s{to{transform:rotate(360deg)}}
+.small{font-size:.8rem;color:#b46484}
+</style>
+</head>
+<body>
+<div class="card" id="card"><div class="big">🌸</div><h1>Confirmando seu pagamento…</h1><div class="spin"></div><p>Estamos consultando o Mercado Pago. Não feche esta página.</p></div>
+<script>
+(function(){
+  var q=new URLSearchParams(location.search);
+  var orderId=q.get('external_reference');
+  var paymentId=q.get('payment_id')||q.get('collection_id');
+  if(paymentId==='null')paymentId=null;
+  try{if(!orderId)orderId=localStorage.getItem('be_order')}catch(e){}
+  var card=document.getElementById('card');
+  function set(icon,title,text,extra){card.innerHTML='<div class="big">'+icon+'</div><h1>'+title+'</h1><p>'+text+'</p>'+(extra||'')}
+  if(!orderId||!/^[a-f0-9]{32}$/.test(orderId)){set('⚠️','Pedido não encontrado','Volte à loja e inicie o pagamento novamente.','<a class="btn" href="/">Voltar à loja</a>');return}
+  var tries=0;
+  function check(){
+    tries++;
+    fetch('/api/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({orderId:orderId,paymentId:paymentId})})
+    .then(function(r){return r.json()}).then(function(j){
+      if(j.state==='paid'){
+        try{localStorage.setItem('be_order',orderId)}catch(e){}
+        set('✅','Pagamento confirmado!','Obrigada pela compra. Seu e-book está liberado.',
+          '<a class="btn" href="/ebook">Abrir meu e-book</a><p class="small">Guarde este link para reabrir em outro aparelho (não compartilhe):<br><b style="word-break:break-all">'+location.origin+'/acesso/'+orderId+'</b></p>');
+      }else if(j.state==='pending'&&tries<40){
+        set('⏳','Aguardando confirmação','Se você pagou com Pix, pode levar alguns instantes. Esta página atualiza sozinha.','<div class="spin"></div>');setTimeout(check,5000);
+      }else if(j.state==='pending'){
+        set('⏳','Ainda não confirmado','Assim que o Mercado Pago confirmar, é só voltar à loja e clicar em "Acessar meu e-book".','<a class="btn" href="/">Voltar à loja</a>');
+      }else if(j.state==='limit'){set('🔒','Limite de acessos',j.error,'')}
+      else{set('❌','Pagamento não aprovado','Não encontramos um pagamento aprovado para este pedido.','<a class="btn" href="/">Tentar novamente</a>')}
+    }).catch(function(){if(tries<10)setTimeout(check,4000);else set('⚠️','Erro de conexão','Tente recarregar a página.','')});
+  }
+  check();
+})();
+</script>
+</body>
+</html>
